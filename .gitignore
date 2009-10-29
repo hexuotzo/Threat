@@ -1,0 +1,9 @@
+*.pyc
+.DS_Store
+Icon?
+*.png
+*~
+*.o
+*.so
+*.tct
+*.tch
