@@ -1,6 +1,23 @@
 # -*- coding:utf-8 -*-
 from django.db import models
+from django.shortcuts import render_to_response
+import datetime
 # Create your models here.
+
+def timefilter(start,end,obj,yw):
+    data=obj.objects.filter(yewu=yw)
+    days=datetime.timedelta(days=3)
+    today = datetime.date.today()
+    if start<end and start - days > today:
+        for i in data:
+            if i.start <= start <= i.end or i.start <= end <= i.end:
+                return False
+        return True
+    return False
+
+
+
+
 
 class Province(models.Model):
     name = models.CharField('省名称',max_length=100)
@@ -21,20 +38,20 @@ class City(models.Model):
     qz = models.CharField(blank=True,max_length=5)   
     start = models.DateField('开始日期') 
     end = models.DateField('结束日期')
+    provname=models.CharField(blank=True,max_length=50)
     def save(self):
-        super(City,self).save()
         num_menu,num_buss,num_sms,num_user=0,0,0,0
         if self.menu:num_menu=2
         if self.buss:num_buss=4
         if self.sms:num_sms=8
         if self.user:num_user=16
         qz_num = num_menu + num_buss + num_sms + num_user 
-        self.qz =str(qz_num) 
-        print self.start,self.end
-        super(City,self).save()
+        self.qz =str(qz_num)
+        self.provname=self.prov.name 
+        if timefilter(self.start,self.end,City,self.yewu):
+            super(City,self).save()
     def __unicode__(self):
         return self.cityname
         
 
 
-    
