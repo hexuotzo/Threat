@@ -10,7 +10,7 @@ class CustomForm(forms.ModelForm):
     class Meta:
         model = City
     def clean_start(self):
-        data=City.objects.filter(yewu=self.data['yewu'],cityname=self.data['cityname'])
+        data=City.objects.filter(yewu=self.data['yewu'],cityname=self.data['cityname']) #取出 同城市同业务的数据
         days=datetime.timedelta(days=3)
         today = datetime.date.today()
         date_start=self.data['start'].split('-')
@@ -18,8 +18,7 @@ class CustomForm(forms.ModelForm):
         syear,smonth,sday=int(date_start[0]),int(date_start[1]),int(date_start[2])
         eyear,emonth,eday=int(date_end[0]),int(date_end[1]),int(date_end[2])
         startdate=datetime.date(syear,smonth,sday)
-        enddate=datetime.date(eyear,emonth,eday)
-        print startdate,enddate,days
+        enddate=datetime.date(eyear,emonth,eday)           #生成开始与结束日期，用于与数据库信息比对
         if startdate >= enddate:
             raise forms.ValidationError('开始日期必须早于结束日期')
         elif startdate - days <= today:

@@ -29,15 +29,15 @@ class City(models.Model):
         if self.menu:num_menu=2
         if self.buss:num_buss=4
         if self.sms:num_sms=8
-        if self.user:num_user=16
+        if self.user:num_user=16  #计算权值
         qz_num = num_menu + num_buss + num_sms + num_user 
         self.qz =str(qz_num)
         self.provid = self.prov.num
-        self.provname=self.prov.name 
+        self.provname=self.prov.name    #自动写入省名称和ID 用于搜索和提取数据
         super(City,self).save(force_insert,force_update)
         f=open("target/report.txt","a")
         msg="%s|%s|%s|%s|%s\n"%(self.start,self.end,self.provid,self.yewu.name,self.qz)
         f.write(msg)
-        f.close()
+        f.close()  #写LOG
     def __unicode__(self):
         return self.cityname
