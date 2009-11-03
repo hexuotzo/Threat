@@ -5,8 +5,6 @@ from django import forms
 import datetime
     
 class CustomForm(forms.ModelForm):
-    days=datetime.timedelta(days=3)
-    today = datetime.date.today()  
     class Meta:
         model = City
     def clean_start(self):
@@ -24,8 +22,9 @@ class CustomForm(forms.ModelForm):
         elif startdate - days <= today:
             raise forms.ValidationError('必须设置3天之后的规则')
         for i in data:
-            if (i.start <= startdate <= i.end or i.start <= enddate <= i.end) or (startdate<i.start and enddate>i.end):
+            if (i.start <= startdate <= i.end or i.start <= enddate <= i.end or (startdate<i.start and enddate>i.end))and str(i.id) != self.data['tid']:
                 raise forms.ValidationError('同一城市与业务出现时间冲突')
+        print self.data
         return self.cleaned_data["start"]
             
         
@@ -38,6 +37,7 @@ class CityAdmin(admin.ModelAdmin):
         ('选择城市', {'fields': ['prov','cityname','yewu']}),  
         ('约束规则', {'fields': ['menu','buss','sms','user']}), 
         ('时间范围', {'fields': ['start','end']}), 
+        ('用于验证，请不要填写',{'fields':['tid']}),
     ]       
     
 admin.site.register(City,CityAdmin)

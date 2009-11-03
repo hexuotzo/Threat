@@ -15,4 +15,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
     (r'^report/','Threat.app1.views.report'),
+    (r'^province/', 'Threat.app1.views.provlist'),
+    (r'^prov/(?P<tid>.*)/','Threat.app1.views.get_prov')
+    #(r'^city/(?P<tid>.*)/', 'Threat.app1.views.get_city'),
 )

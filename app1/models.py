@@ -24,6 +24,7 @@ class City(models.Model):
     end = models.DateField('结束日期')
     provname = models.CharField(blank=True,max_length=50)
     provid = models.CharField(blank=True,max_length=10)
+    tid = models.CharField('其他',blank=True,max_length=50,help_text='请不要填写……')
     def save(self, force_insert=False, force_update=False):
         num_menu,num_buss,num_sms,num_user=0,0,0,0
         if self.menu:num_menu=2
@@ -34,6 +35,8 @@ class City(models.Model):
         self.qz =str(qz_num)
         self.provid = self.prov.num
         self.provname=self.prov.name    #自动写入省名称和ID 用于搜索和提取数据
+        super(City,self).save(force_insert,force_update)
+        if self.id!=None:self.tid=self.id
         super(City,self).save(force_insert,force_update)
         f=open("target/report.txt","a")
         msg="%s|%s|%s|%s|%s\n"%(self.start,self.end,self.provid,self.yewu.name,self.qz)

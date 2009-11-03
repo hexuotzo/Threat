@@ -5,9 +5,12 @@
     <head>
     <body>
 	    <div align="center">
-	        <font size="5" color="red">各省列表</font><p>
+	        <font size="5" color="red">市列表</font><p>
 		</div>
 		<table width="90%" border="1" cellpadding="5" cellspacing="0" align=center>
+		    <tr height="50">
+			    <td><a href="/province/">回到省列表</a></td>
+			</tr>
 	        <tr height="50">
 				<td width="10%">开始日期</td>
 				<td width="10%">结束日期</td>			    
@@ -18,7 +21,6 @@
 				<td width="10%">busslog</td>
 				<td width="10%">sms</td>
 				<td width="10%">用户姓名</td>
-				<td width="10%">权值</td>
 			</tr>
 		{% for i in prov_list %}
 			<tr>
@@ -31,7 +33,6 @@
 				<td width="10%">{{i.buss|yesno:"√,x,Perhaps"}}</td>
 				<td width="10%">{{i.sms|yesno:"√,x,Perhaps"}}</td>
 				<td width="10%">{{i.user|yesno:"√,x,Perhaps"}}</td>
-				<td width="10%">{{i.qz}}</td>
 			</tr>
 	    {% endfor %}
 		</table>
