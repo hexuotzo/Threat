@@ -16,7 +16,7 @@ class CustomForm(forms.ModelForm):
         syear,smonth,sday=int(date_start[0]),int(date_start[1]),int(date_start[2])
         eyear,emonth,eday=int(date_end[0]),int(date_end[1]),int(date_end[2])
         startdate=datetime.date(syear,smonth,sday)
-        enddate=datetime.date(eyear,emonth,eday)           #生成开始与结束日期，用于与数据库信息比对
+        enddate=datetime.date(eyear,emonth,eday) #生成开始与结束日期，用于与数据库信息比对
         if startdate >= enddate:
             raise forms.ValidationError('开始日期必须早于结束日期')
         elif startdate - days <= today:
@@ -24,7 +24,6 @@ class CustomForm(forms.ModelForm):
         for i in data:
             if (i.start <= startdate <= i.end or i.start <= enddate <= i.end or (startdate<i.start and enddate>i.end))and str(i.id) != self.data['tid']:
                 raise forms.ValidationError('同一城市与业务出现时间冲突')
-        print self.data
         return self.cleaned_data["start"]
             
         
@@ -33,12 +32,12 @@ class CityAdmin(admin.ModelAdmin):
     form = CustomForm
     list_display = ('cityname', 'prov','yewu','start','end')
     search_fields = ['cityname','provname']
-    fieldsets = [  
-        ('选择城市', {'fields': ['prov','cityname','yewu']}),  
-        ('约束规则', {'fields': ['menu','buss','sms','user']}), 
-        ('时间范围', {'fields': ['start','end']}), 
+    fieldsets = [
+        ('选择城市', {'fields': ['prov',('cityname','citynum'),'yewu']}),
+        ('约束规则', {'fields': ['menu','buss','sms','user']}),
+        ('时间范围', {'fields': ['start','end']}),
         ('用于验证，请不要填写',{'fields':['tid']}),
-    ]       
+    ]
     
 admin.site.register(City,CityAdmin)
 admin.site.register(Yewu)

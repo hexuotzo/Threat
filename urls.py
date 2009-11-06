@@ -1,5 +1,5 @@
 from django.conf.urls.defaults import *
-
+from django.conf import settings
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
@@ -14,8 +14,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    (r'^report/','Threat.app1.views.report'),
-    (r'^province/', 'Threat.app1.views.provlist'),
-    (r'^prov/(?P<tid>.*)/','Threat.app1.views.get_prov')
+    (r'^jihe_list/','Threat.app1.views.get_prov'),
     #(r'^city/(?P<tid>.*)/', 'Threat.app1.views.get_city'),
+    (r'^static/(?P<path>.*)$', 'django.views.static.serve', 
+        {'document_root': settings.MEDIA_ROOT}),
+    (r'^media/(?P<path>.*)$', 'django.views.static.serve', 
+        {'document_root': settings.ADMIN_MEDIA_ROOT}),
 )

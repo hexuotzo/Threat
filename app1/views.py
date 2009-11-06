@@ -2,14 +2,11 @@
 from models import City,Province
 from django.shortcuts import render_to_response
 
-def report(request):
-    prov_list = City.objects.filter(provid=111)
-    return render_to_response('index.html',locals())
-
-def provlist(request):
-    prov_list = Province.objects.all()
-    return render_to_response('prov_list.html',locals())
-
-def get_prov(request,tid):
-    city_list = City.objects.filter(provid=tid)
+def get_prov(request):
+    if request.method == 'POST':
+        citylist=request.POST.getlist('cityname')
+        provlist=request.POST.getlist('provname')
+        if citylist == []:
+            prov_list= City.objects.filter(provid__in=provlist).order_by('-id')
+        city_list = City.objects.filter(citynum__in=citylist).order_by('-id')
     return render_to_response('city_list.html',locals())
