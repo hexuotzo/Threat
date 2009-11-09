@@ -2,63 +2,38 @@
 from django.db import models
 # Create your models here.
 
-class Province(models.Model):
-    num = models.IntegerField('省编码',null=True,blank=True)
-    name = models.CharField('省名称',max_length=100)
-    class Meta:
-        verbose_name = u"省份"
-        verbose_name_plural = u"省份管理"
-    def __unicode__(self):
-        return self.name
-#class Temp(models.Model):
-#    name=models.CharField(max_length=100)
-#    num= models.IntegerField()
-#    prov= models.ForeignKey(Province)
+#class Province(models.Model):
+#    num = models.IntegerField('省编码')
+#    name = models.CharField('省名称',max_length=100)
+#    class Meta:
+#        verbose_name = u"省份"
+#        verbose_name_plural = u"省份管理"
 #    def __unicode__(self):
-#        return self.name
-class Yewu(models.Model):
-    name=models.CharField('业务名称',max_length=100)
-    class Meta:
-        verbose_name = u"业务分类"
-        verbose_name_plural = u"业务管理"      
-    def __unicode__(self):
-        return self.name
-class City(models.Model):
-    cityname = models.CharField('市名称',max_length=100)
-    citynum = models.IntegerField('市编码')
-    prov = models.ForeignKey(Province,verbose_name='省名称')
-    yewu = models.ForeignKey(Yewu,verbose_name='业务类型')
-    menu = models.BooleanField('勾兑menulog')
-    buss = models.BooleanField('勾兑busslog')
-    sms = models.BooleanField('勾兑sms')
-    user = models.BooleanField('勾兑姓名')
-    qz = models.CharField(blank=True,max_length=5)
+#        return '%s--ID:%s'% (self.name,self.num)
+#class City(models.Model):
+#    name=models.CharField('市名称',max_length=100)
+#    num= models.IntegerField('市ID')
+#    prov= models.ForeignKey(Province)
+#    class Meta:
+#        verbose_name = u"城市"
+#        verbose_name_plural = u"城市管理"        
+#    def __unicode__(self):
+#        return '%s--ID:%s'% (self.name,self.num)
+class Jihe(models.Model):
+    city = models.CharField('市名称',max_length=100)
+    cid = models.CharField('市编码',max_length=100)
+    prov = models.CharField('市名称',max_length=100)
+    pid = models.CharField('市编码',max_length=100)    
+    yewu = models.CharField('业务类型',max_length=100)
+    sms = models.CharField('勾兑sms',max_length=50)   #稽核值：2
+    user = models.CharField('勾兑姓名',max_length=50)  #稽核值：2   
+    qz = models.IntegerField('权值')
     start = models.DateField('开始日期')
     end = models.DateField('结束日期')
-    provname = models.CharField(blank=True,max_length=50)
-    provid = models.CharField(blank=True,max_length=10)
-    tid = models.CharField('其他',blank=True,max_length=50,help_text='请不要填写……')
-    def save(self, force_insert=False, force_update=False):
-        num_menu,num_buss,num_sms,num_user=0,0,0,0
-        if self.menu:num_menu=2
-        if self.buss:num_buss=4
-        if self.sms:num_sms=8
-        if self.user:num_user=16 #计算权值
-        qz_num = num_menu + num_buss + num_sms + num_user
-        self.qz =str(qz_num)
-        self.provid = self.prov.num
-        self.provname=self.prov.name #自动写入省名称和ID 用于搜索和提取数据
-        super(City,self).save(force_insert,force_update)
-        if self.id!=None:self.tid=self.id
-        super(City,self).save(force_insert,force_update)
-        f=open("target/filter_config.txt","a")
-        msg="%s|%s|%s|%s|%s|%s\n"%(self.start,self.end,self.provid,self.citynum,self.yewu.name,self.qz)
-        f.write(msg)
-        f.close() #写LOG
     class Meta:
         verbose_name = u"稽核"
         verbose_name_plural = u"稽核管理"   
            
     def __unicode__(self):
-        return self.cityname
+        return self.city
     
