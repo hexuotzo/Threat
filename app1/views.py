@@ -1,10 +1,12 @@
 # -*- coding:utf-8 -*-
 # Create your views here.
 #from models import City,Province
+from settings import filter_file
 from django.shortcuts import render_to_response
 from django import forms
-from app1.models import Jihe
+from app1.models import Jihe,Business
 import datetime
+from django.contrib.admin.views.decorators import staff_member_required
 
 provinces = {
 	'100':'北京市',
@@ -39,87 +41,83 @@ provinces = {
 	'971':'青海省',
 	'991':'新疆维吾尔自治区',
 }
-
-def get_prov(request):
+def get_date(getstart,getend):
+    date_start=getstart.split('-')
+    date_end=getend.split('-')
+    syear,smonth,sday=int(date_start[0]),int(date_start[1]),int(date_start[2])
+    eyear,emonth,eday=int(date_end[0]),int(date_end[1]),int(date_end[2])
+    startdate=datetime.date(syear,smonth,sday)
+    enddate=datetime.date(eyear,emonth,eday)
+    return startdate,enddate
+def timecheck(startdate,enddate,cid_list,yewulist):
+    for i in cid_list:
+        for j in yewulist:
+            data=Jihe.objects.filter(cid=i,yid=j)
+            for k in data:
+				if k.start <= startdate <= k.end or k.start <= enddate <= k.end or (startdate<k.start and enddate>k.end):
+					return False
+    return True
+class ContactForm(forms.Form):
+    sms = forms.BooleanField()
+    user = forms.BooleanField()
+def show_views(request):
     if request.method == 'POST':
         citylist=request.POST.getlist('cityname')
         provlist=request.POST.getlist('provname')
         if citylist == []:
-            prov_list= Jihe.objects.filter(pid__in=provlist).order_by('-id')
+		    prov_list= Jihe.objects.filter(pid__in=provlist).order_by('-id')
         city_list = Jihe.objects.filter(cid__in=citylist).order_by('-id')
-    return render_to_response('city_list.html',locals())
- 
+    return render_to_response('jh_list.html',locals())
 
-def timecheck(start,end,citylist,yewulist):
-    if start=="" or end=="" or citylist==[] or yewulist==[]:
-        return False
-    days=datetime.timedelta(days=3)
-    today = datetime.date.today()
-    date_start=start.split('-')
-    date_end=end.split('-')
-    syear,smonth,sday=int(date_start[0]),int(date_start[1]),int(date_start[2])
-    eyear,emonth,eday=int(date_end[0]),int(date_end[1]),int(date_end[2])
-    startdate=datetime.date(syear,smonth,sday)
-    enddate=datetime.date(eyear,emonth,eday) #生成开始与结束日期，用于与数据库信息比对
-    for i in citylist:
-        i=i.split('_')
-        provid,cityid,cname=i[0],i[1],i[2]
-        for j in yewulist:
-            data=Jihe.objects.filter(cid=cityid,yewu=j)
-            for k in data:
-                print "1111111111111111"
-                if startdate >= enddate:
-                    return False
-                elif startdate - days <= today:
-                    return False
-                for j in data:
-                    print "2222222222222"
-                    if j.start <= startdate <= j.end or j.start <= enddate <= j.end or (startdate<j.start and enddate>j.end):
-                        return False
-    
-    return True
 
-class ContactForm(forms.Form):
-    sms = forms.BooleanField()
-    user = forms.BooleanField() 
-     
+@staff_member_required
 def jh_admin(request):
+    business = Business.objects.all()
     form=ContactForm()
     if request.method == 'POST':
-        num1,num2=0,0
-        qz1,qz2="no","no"
         getsms = request.POST.get('sms')
         getuser = request.POST.get('user')
         getstart = request.POST.get('start')
         getend = request.POST.get('end')
         citylist = request.POST.getlist('cityname')
         yewulist = request.POST.getlist('yewuname')
+        if getstart=="" or getend=="" or citylist==[] or yewulist==[]:
+            result="日期，地市，业务不能为空"
+            return render_to_response('myadmin.html',locals())
+        days=datetime.timedelta(days=3)      #开始验证时间
+        today = datetime.date.today()		
+        startdate,enddate=get_date(getstart,getend)
+        if startdate >= enddate:
+            result= "开始日期必须早于结束日期"
+            return render_to_response('myadmin.html',locals())
+        if startdate - days <= today:
+            result= "不能设置3天之内的规则"
+            return render_to_response('myadmin.html',locals())
+        cid_list=map(lambda x:x[4:7],citylist)	#取市ID
+        if not timecheck(startdate,enddate,cid_list,yewulist):
+            result="选中的城市与业务，与已存在的规则有冲突"
+            return render_to_response('myadmin.html',locals())
+        num1,num2=0,0
+        qz1,qz2="no","no"		
         if getsms=="on":
             num1=2
             qz1="yes"
         if getuser=="on":
             num2=4
             qz2="yes"
-        if timecheck(getstart,getend,citylist,yewulist):
-            for i in citylist:
-                i=i.split('_')
-                provid,cityid,cname=i[0],i[1],i[2]
-                for j in yewulist:
-                    quanzhi=num1+num2
-                    date_start=getstart.split('-')
-                    date_end=getend.split('-')
-                    syear,smonth,sday=int(date_start[0]),int(date_start[1]),int(date_start[2])
-                    eyear,emonth,eday=int(date_end[0]),int(date_end[1]),int(date_end[2])
-                    startdate=datetime.date(syear,smonth,sday)
-                    enddate=datetime.date(eyear,emonth,eday) 
-                    jihe = Jihe(city=cname,cid=cityid,prov=provinces[provid],pid=provid,yewu=j,sms=qz1,user=qz2,start=startdate,end=enddate,qz=quanzhi)
-                    jihe.save()
-                    f=open("target/filter_config","a")
-                    msg="%s|%s|%s|%s|%s|%s\n"%(startdate,enddate,provid,cityid,j,quanzhi)
-                    f.write(msg)
-                    f.close() #写LOG                    
-            result="------添加成功------"
-            return render_to_response('myadmin.html',locals())
-        result="!!------error------!!"
-    form=ContactForm()
+        quanzhi=num1+num2
+#存数据,写log
+        f=open(filter_file,"a")
+        for i in citylist:   
+            i=i.split('_')
+            provid,cityid,cname=i[0],i[1],i[2]
+            for j in yewulist:
+                yw = Business.objects.filter(yid=j)[0]
+                jihe = Jihe(city=cname,cid=cityid,prov=provinces[provid],pid=provid,yid=j,yewu=yw.yname,sms=qz1,user=qz2,start=startdate,end=enddate,qz=quanzhi)
+                jihe.save()
+                msg="%s|%s|%s|%s|%s|%s\n"%(startdate,enddate,provid,cityid,j,quanzhi)
+                f.write(msg)
+        f.close()    
+        result="------添加成功------"
     return render_to_response('myadmin.html',locals())
+

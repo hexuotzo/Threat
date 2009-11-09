@@ -1,6 +1,7 @@
 # Django settings for Threat project.
 from os.path import join
 setting_path='/home/hexuotzo/desktop/world-of-datecraft/Threat'
+filter_file='target/filter_config'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
