@@ -1,7 +1,8 @@
+# -*- coding:utf-8 -*-
 # Django settings for Threat project.
 from os.path import join
-setting_path='/home/hexuotzo/desktop/world-of-datecraft/Threat'
-filter_file='target/filter_config'
+setting_path='/home/hexuotzo/desktop/world-of-datecraft/Threat'  # 项目目录
+filter_file='target/filter_config'  #存日志的目录/日志文件
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
