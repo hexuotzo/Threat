@@ -49,14 +49,15 @@ def get_date(getstart,getend):
     startdate=datetime.date(syear,smonth,sday)
     enddate=datetime.date(eyear,emonth,eday)
     return startdate,enddate
+
 def timecheck(startdate,enddate,cid_list,yewulist):
-    for i in cid_list:
-        for j in yewulist:
-            data=Jihe.objects.filter(cid=i,yid=j)
-            for k in data:
-				if k.start <= startdate <= k.end or k.start <= enddate <= k.end or (startdate<k.start and enddate>k.end):
-					return False
-    return True
+	data=Jihe.objects.filter(cid__in=cid_list,yid__in=yewulist)
+	for k in data:
+		if k.start <= startdate <= k.end or k.start <= enddate <= k.end or (startdate<k.start and enddate>k.end):
+		    return False
+	return True
+
+
 class ContactForm(forms.Form):
     sms = forms.BooleanField()
     user = forms.BooleanField()
