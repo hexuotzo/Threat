@@ -50,7 +50,7 @@ def get_date(getstart,getend):
     enddate=datetime.date(eyear,emonth,eday)
     return startdate,enddate
 
-def timecheck(startdate,enddate,cid_list,yewulist):
+def timecheck(startdate,enddate,cid_list,yewulist):   #验证数据库中同市同业务 是否有时间冲突
 	data=Jihe.objects.filter(cid__in=cid_list,yid__in=yewulist)
 	for k in data:
 		if k.start <= startdate <= k.end or k.start <= enddate <= k.end or (startdate<k.start and enddate>k.end):
