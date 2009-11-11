@@ -177,5 +177,5 @@ def prov_admin(request):
         result="------添加成功------"
     return render_to_response('myadmin_prov.html',locals())
 		
-			
-				
+def index(request):
+	return render_to_response('index.html',locals())

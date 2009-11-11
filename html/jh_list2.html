@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+{% block body %}
+            <form method="POST" action="/show_prov/">
+                <select id="prov" name="provname" multiple style="width:160px;height:160px">
+                    <option value="100">北京市</option>
+                    <option value="200">广东省</option>
+                    <option value="210">上海市</option>
+                    <option value="220">天津市</option>
+                    <option value="230">重庆市</option>
+                    <option value="240">辽宁省</option>
+                    <option value="250">江苏省</option>
+                    <option value="270">湖北省</option>
+                    <option value="280">四川省</option>
+                    <option value="290">陕西省</option>
+                    <option value="311">河北省</option>
+                    <option value="351">山西省</option>
+                    <option value="371">河南省</option>
+                    <option value="431">吉林省</option>
+                    <option value="451">黑龙江省</option>
+                    <option value="471">内蒙古自治区</option>
+                    <option value="531">山东省</option>
+                    <option value="551">安徽省</option>
+                    <option value="571">浙江省</option>
+                    <option value="591">福建省</option>
+                    <option value="731">湖南省</option>
+                    <option value="771">广西壮族自治区</option>
+                    <option value="791">江西省</option>
+                    <option value="851">贵州省</option>
+                    <option value="871">云南省</option>
+                    <option value="891">西藏自治区</option>
+                    <option value="898">海南省</option>
+                    <option value="931">甘肃省</option>
+                    <option value="951">宁夏回族自治区</option>
+                    <option value="971">青海省</option>
+                    <option value="991">新疆维吾尔自治区</option>                        
+                </select> &nbsp;
+                <input type="submit" value="查询" >
+            </form>     
+        <table border cellspacing=0 width=950 class="demo">
+            {% if title %}
+                <tr height=35 align=center>
+                    <td width="10%">{{title_start}}</td>
+                    <td width="10%">{{title_end}}</td>
+                    <td width="15%">{{title_prov}}</td>
+                    <td width="15%">{{title_filter}}</td>
+                </tr>
+            {% endif %}
+		    {% for i in prov_list %}
+                <tr valign=top align=center>
+                    <td width="10%">{{i.start}}<p></td>
+                    <td width="10%">{{i.end}}<p></td>
+                    <td width="10%">{{i.prov}}<p></td>
+                    <td width="10%">{{i.filprov}}<p></td>
+                </tr>
+		    {% endfor %}                 
+        </table>
+{% endblock %}
