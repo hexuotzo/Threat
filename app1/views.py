@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
 # Create your views here.
 #from models import City,Province
-from settings import filter_file
+from settings import filter_file,filter_byprov
 from django.shortcuts import render_to_response
 from django import forms
-from app1.models import Jihe,Business
+from app1.models import Jihe,Business,Provfilter
 import datetime
 from django.contrib.admin.views.decorators import staff_member_required
 
@@ -61,18 +61,30 @@ def timecheck(startdate,enddate,cid_list,yewulist):   #验证数据库中同市�
 class ContactForm(forms.Form):
     sms = forms.BooleanField()
     user = forms.BooleanField()
-def show_views(request):
+    byprov = forms.BooleanField() #移动平台流水号排重 文件：filter_byprov.txt
+	
+def jh_city(request):
     if request.method == 'POST':
         citylist=request.POST.getlist('cityname')
         provlist=request.POST.getlist('provname')
         if citylist == []:
 		    prov_list= Jihe.objects.filter(pid__in=provlist).order_by('-id')
         city_list = Jihe.objects.filter(cid__in=citylist).order_by('-id')
+        title=True
+        title_start,title_end,title_prov,title_city,title_yewu,title_sms,title_user="开始日期","结束日期","省名称","省名称","业务名称","短信","用户姓名"		
     return render_to_response('jh_list.html',locals())
 
+def jh_prov(request):
+    if request.method == 'POST':
+        provlist=request.POST.getlist('provname')
+        prov_list = Provfilter.objects.filter(pid__in=provlist).order_by('-id')
+        title=True
+        title_start,title_end,title_prov,title_filter="开始日期","结束日期","省名称","移动排重"
+    return render_to_response('jh_list2.html',locals())
+		
 
 @staff_member_required
-def jh_admin(request):
+def city_admin(request):
     business = Business.objects.all()
     form=ContactForm()
     if request.method == 'POST':
@@ -83,21 +95,21 @@ def jh_admin(request):
         citylist = request.POST.getlist('cityname')
         yewulist = request.POST.getlist('yewuname')
         if getstart=="" or getend=="" or citylist==[] or yewulist==[]:
-            result="日期，地市，业务不能为空"
-            return render_to_response('myadmin.html',locals())
+            error_msg="添加失败：日期，地市，业务不能为空"
+            return render_to_response('myadmin_city.html',locals())
         days=datetime.timedelta(days=3)      #开始验证时间
         today = datetime.date.today()		
         startdate,enddate=get_date(getstart,getend)
         if startdate >= enddate:
-            result= "开始日期必须早于结束日期"
-            return render_to_response('myadmin.html',locals())
+            error_msg= "添加失败：开始日期必须早于结束日期"
+            return render_to_response('myadmin_city.html',locals())
         if startdate - days <= today:
-            result= "不能设置3天之内的规则"
-            return render_to_response('myadmin.html',locals())
+            error_msg= "添加失败：不能设置3天之内的规则"
+            return render_to_response('myadmin_city.html',locals())
         cid_list=map(lambda x:x[4:7],citylist)	#取市ID
         if not timecheck(startdate,enddate,cid_list,yewulist):
-            result="选中的城市与业务，与已存在的规则有冲突"
-            return render_to_response('myadmin.html',locals())
+            error_msg="添加失败：选中的城市与业务，与已存在的规则有冲突"
+            return render_to_response('myadmin_city.html',locals())
         num1,num2=0,0
         qz1,qz2="no","no"		
         if getsms=="on":
@@ -120,5 +132,50 @@ def jh_admin(request):
                 f.write(msg)
         f.close()    
         result="------添加成功------"
-    return render_to_response('myadmin.html',locals())
+    return render_to_response('myadmin_city.html',locals())
 
+
+@staff_member_required
+def prov_admin(request):
+    form=ContactForm()
+    if request.method == 'POST':
+        provlist=request.POST.getlist('provname')
+        byprov = request.POST.get('byprov')
+        getstart = request.POST.get('start')
+        getend = request.POST.get('end')
+        if getstart=="" or getend=="" or provlist==[]:
+            error_msg = "添加失败：请填写省，开始时间，结束时间"
+            return render_to_response('myadmin_prov.html',locals())
+        startdate,enddate=get_date(getstart,getend)
+        days=datetime.timedelta(days=3)      #开始验证时间
+        today = datetime.date.today()
+        if startdate >= enddate:
+            error_msg= "添加失败：开始日期必须早于结束日期"
+            return render_to_response('myadmin_prov.html',locals())
+        if startdate - days <= today:
+            error_msg= "添加失败：不能设置3天之内的规则"
+            return render_to_response('myadmin_prov.html',locals())
+        data=Provfilter.objects.filter(pid__in=provlist)
+        for k in data:
+            if k.start <= startdate <= k.end or k.start <= enddate <= k.end or (startdate<k.start and enddate>k.end):	
+                error_msg= "添加失败：选中时间内省稽核出现冲突"	
+                return render_to_response('myadmin_prov.html',locals())
+        num=0
+        quanzhi="no"
+        if byprov == "on":
+            num=2
+            quanzhi="yes"
+        f=open(filter_byprov,"a")
+        for i in provlist:
+            byprov=Provfilter(pid=i,prov=provinces[i],filprov=quanzhi,qz=num,start=startdate,end=enddate)
+            byprov.save()
+            pname=unicode(provinces[i],'utf-8')
+            msg="%s|%s|%s|%s|%s\n"%(startdate,enddate,i,pname,num)
+            msg=msg.encode('utf-8')
+            f.write(msg)
+        f.close()
+        result="------添加成功------"
+    return render_to_response('myadmin_prov.html',locals())
+		
+			
+				

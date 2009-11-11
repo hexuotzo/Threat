@@ -14,8 +14,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
-    (r'^add/','Threat.app1.views.jh_admin'),
-    (r'^show_views/','Threat.app1.views.show_views'),
+    (r'^add_city/','Threat.app1.views.city_admin'),
+    (r'^add_prov/','Threat.app1.views.prov_admin'),
+    (r'^show_city/','Threat.app1.views.jh_city'),
+    (r'^show_prov/','Threat.app1.views.jh_prov'),
     (r'^accounts/login/$', 'django.contrib.auth.views.login'),    
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', 
         {'document_root': settings.MEDIA_ROOT}),

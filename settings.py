@@ -2,7 +2,8 @@
 # Django settings for Threat project.
 from os.path import join
 setting_path='/home/hexuotzo/desktop/world-of-datecraft/Threat'  # 项目目录
-filter_file='target/filter_config'  #存日志的目录/日志文件
+filter_file='target/filter_config'  #存日志的目录/日志文件 ,市稽核
+filter_byprov='target/filter_prov.txt'  #移动平台流水号排重日志
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 

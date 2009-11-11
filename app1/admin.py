@@ -1,6 +1,6 @@
 ## -*- coding:utf-8 -*-
 from django.contrib import admin
-from app1.models import Jihe,Business
+from app1.models import Jihe,Business,Provfilter
 #from django import forms
 #import datetime
 #    
@@ -37,5 +37,9 @@ class JiheAdmin(admin.ModelAdmin):
 class BusiAdmin(admin.ModelAdmin):
     list_display = ('yname','yid')
     search_fields = ['yname','yid']
+class ProvAdmin(admin.ModelAdmin):
+    list_display = ('prov','pid','start','end')
+    search_field = ['prov','pid']  
 admin.site.register(Jihe,JiheAdmin)
 admin.site.register(Business,BusiAdmin)
+admin.site.register(Provfilter,ProvAdmin)

@@ -1,6 +1,19 @@
 # -*- coding:utf-8 -*-
 from django.db import models
 # Create your models here.
+
+class Provfilter(models.Model):
+    prov = models.CharField('省名称',max_length=100)
+    pid = models.CharField('省编码',max_length=100)
+    filprov = models.CharField('移动排重',max_length=100)
+    qz = models.IntegerField('权值')
+    start = models.DateField('开始日期')
+    end = models.DateField('结束日期')
+    class Meta:
+        verbose_name = u"省移动排重"
+        verbose_name_plural = u"省移动排重管理"
+    def __unicode__(self):
+        return self.prov    
 class Jihe(models.Model):
     city = models.CharField('市名称',max_length=100)
     cid = models.CharField('市编码',max_length=100)
