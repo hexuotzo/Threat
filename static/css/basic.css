@@ -1,0 +1,22 @@
+li{
+list-style:none;
+margin-bottom: 20px;
+}
+#left {
+ font-size:14;
+ width:18%;
+ height:100%;
+ text-align:left; 
+ float:left; 
+ clear:left;
+ overflow:hidden;
+ background-color:#0fdfff;
+ color:#0000FF;
+}
+#right {
+ width:80%;
+ text-align:left; 
+ float:right; 
+ clear:right;
+ overflow:hidden;
+ }
