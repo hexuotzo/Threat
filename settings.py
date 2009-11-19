@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
 # Django settings for Threat project.
-from os.path import join
-setting_path='/home/hexuotzo/desktop/world-of-datecraft/Threat'  # 项目目录
-filter_file='target/filter_config'  #存日志的目录/日志文件 ,市稽核
-filter_byprov='target/filter_prov.txt'  #移动平台流水号排重日志
+#from os.path import join
+filter_file='target/filter_config.txt'
+filter_byprov='target/filter_prov.txt'
+filter_log='target/filter_log'
+#filter_file='/logs/orig/filter/filter_config'  #存日志的目录/日志文件 ,市稽核
+#filter_byprov='/logs/orig/filter/filter_byprov.txt'  #移动平台流水号排重日志
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
@@ -25,7 +27,7 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 # although not all choices may be available on all operating systems.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Asia/Shanghai'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -39,8 +41,8 @@ USE_I18N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = join(setting_path, 'static')
-ADMIN_MEDIA_ROOT = join(setting_path, 'media')
+MEDIA_ROOT = 'static'
+ADMIN_MEDIA_ROOT = 'media'
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
@@ -67,7 +69,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
-ROOT_URLCONF = 'Threat.urls'
+ROOT_URLCONF = 'threat.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -82,5 +84,5 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'app1',
+    'threat',
 )

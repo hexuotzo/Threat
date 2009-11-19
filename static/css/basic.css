@@ -2,6 +2,8 @@ li{
 list-style:none;
 margin-bottom: 20px;
 }
+table{
+font-size:13;}
 #left {
  font-size:14;
  width:18%;
@@ -10,8 +12,8 @@ margin-bottom: 20px;
  float:left; 
  clear:left;
  overflow:hidden;
- background-color:#0fdfff;
- color:#0000FF;
+ background-color:#e3dfff;
+ color:#000000;
 }
 #right {
  width:80%;

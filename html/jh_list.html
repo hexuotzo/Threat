@@ -40,37 +40,37 @@
     </form>     
 <table border cellspacing=0 width=950 class="demo">
     {% if title %}
-    <tr height=35 align=center>
-        <td width="10%">{{title_start}}</td>
-        <td width="10%">{{title_end}}</td>
-        <td width="15%">{{title_prov}}</td>
-        <td width="15%">{{title_city}}</td>
-        <td width="10%">{{title_yewu}}</td>
-        <td width="10%">{{title_sms}}</td>
-        <td width="10%">{{title_user}}</td>
-    </tr>
+        <tr height=35 align=center>
+            <td width="10%">{{title_start}}</td>
+            <td width="10%">{{title_end}}</td>
+            <td width="15%">{{title_prov}}</td>
+            <td width="12%">{{title_city}}</td>
+            <td width="18%">{{title_yewu}}</td>
+            <td width="7%">{{title_sms}}</td>
+            <td width="8%">{{title_user}}</td>
+        </tr>
     {% endif %}
     
     {% for i in city_list %}
-    <tr valign=top align=center>
-        <td width="10%">{{i.start}}<p></td>
-        <td width="10%">{{i.end}}<p></td>
-        <td width="10%">{{i.prov}}<p></td>
-        <td width="10%">{{i.city}}<p></td>
-        <td width="10%">{{i.yewu}}<p></td>
-        <td width="10%">{{i.sms}}<p></td>
-        <td width="10%">{{i.user}}<p></td>
-    </tr>
+        <tr valign=top align=center>
+            <td width="10%">{{i.start}}<p></td>
+            <td width="10%">{{i.end}}<p></td>
+            <td width="15%">{{i.prov}}<p></td>
+            <td width="12%">{{i.city}}<p></td>
+            <td width="18%">{{i.yewu}}<p></td>
+            <td width="7%">{{i.sms}}<p></td>
+            <td width="8%">{{i.user}}<p></td>
+        </tr>
     {% endfor %}  
-    {% for i in prov_list %}
+    {% for j in prov_list %}
          <tr valign=top align=center>
-             <td width="10%">{{i.start}}<p></td>
-             <td width="10%">{{i.end}}<p></td>
-             <td width="10%">{{i.prov}}<p></td>
-             <td width="10%">{{i.city}}<p></td>
-             <td width="10%">{{i.yewu}}<p></td>
-             <td width="10%">{{i.sms}}<p></td>
-             <td width="10%">{{i.user}}<p></td>
+             <td width="10%">{{j.start}}<p></td>
+             <td width="10%">{{j.end}}<p></td>
+             <td width="15%">{{j.prov}}<p></td>
+             <td width="12%">{{j.city}}<p></td>
+             <td width="18%">{{j.yewu}}<p></td>
+             <td width="7%">{{j.sms}}<p></td>
+             <td width="8%">{{j.user}}<p></td>
          </tr>
    {% endfor %}                
 </table>
